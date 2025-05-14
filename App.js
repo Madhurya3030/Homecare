@@ -3,7 +3,9 @@ import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Splash from './Splash'; 
+import Splash from './Splash';
+import HomeScreen from './HomeScreen';
+import AllCategoriesScreen from './AllCategoriesScreen'; // Make sure path is correct
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +32,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={Splash} />
-        {/* Add other screens here like Login, Home, etc. */}
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="AllCategories" component={AllCategoriesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

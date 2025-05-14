@@ -1,20 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Image } from 'react-native';
 
-const SplashScreen = () => {
-  const scaleAnim = useRef(new Animated.Value(0.5)).current; 
-  const textOpacity = useRef(new Animated.Value(0)).current; 
-  const textTranslateY = useRef(new Animated.Value(20)).current; 
+const Splash = ({ navigation }) => {
+  const scaleAnim = useRef(new Animated.Value(0.5)).current;
+  const textOpacity = useRef(new Animated.Value(0)).current;
+  const textTranslateY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
-    // Image zoom-in
     Animated.timing(scaleAnim, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: true,
     }).start();
 
-    // Text fade and slide up after delay
     Animated.parallel([
       Animated.timing(textOpacity, {
         toValue: 1,
@@ -29,12 +27,18 @@ const SplashScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
+
+    const timer = setTimeout(() => {
+      navigation.replace('Home');  // ✅ Fixed route name
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('./assets/homecare.jpg')}
+        source={require('./assets/images/homecare.jpg')}
         style={[styles.logo, { transform: [{ scale: scaleAnim }] }]}
       />
       <Animated.Text
@@ -52,7 +56,7 @@ const SplashScreen = () => {
   );
 };
 
-export default SplashScreen;
+export default Splash;
 
 const styles = StyleSheet.create({
   container: {
@@ -69,6 +73,6 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 20,
     fontSize: 18,
-    color: '#4B5563', // Optional: nice gray tone
+    color: '#4B5563',
   },
 });
