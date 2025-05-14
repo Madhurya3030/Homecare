@@ -1,4 +1,3 @@
-// HomeScreen.js
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -9,20 +8,13 @@ import {
   ScrollView,
   FlatList,
   Dimensions,
-  ActivityIndicator,
 } from 'react-native';
-import * as Location from 'expo-location';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const GOOGLE_API_KEY = 'YOUR_GOOGLE_API_KEY'; // Replace with your actual key
-
 export default function HomeScreen() {
-  const [location, setLocation] = useState(null);
-  const [locationLoading, setLocationLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // <-- simulate login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // simulate login state
   const flatListRef = useRef(null);
   const navigation = useNavigation();
 
@@ -43,34 +35,6 @@ export default function HomeScreen() {
   ];
 
   useEffect(() => {
-    (async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setLocation('Permission denied');
-          setLocationLoading(false);
-          return;
-        }
-
-        const loc = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = loc.coords;
-
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`
-        );
-
-        const address = response.data.results[0]?.formatted_address;
-        setLocation(address || 'Unknown Location');
-      } catch (error) {
-        console.error('Location error:', error.message);
-        setLocation('Error fetching location');
-      } finally {
-        setLocationLoading(false);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       let nextIndex = (currentIndex + 1) % services.length;
       setCurrentIndex(nextIndex);
@@ -87,7 +51,7 @@ export default function HomeScreen() {
 
   const handleLoginPress = () => {
     setShowDropdown(false);
-    navigation.navigate('Login');
+    navigation.navigate('login');
   };
 
   return (
@@ -124,12 +88,8 @@ export default function HomeScreen() {
               )}
             </View>
           </View>
-          <Text style={styles.address}>
-            {locationLoading ? <ActivityIndicator size="large" color="#007bff" /> : location}
-          </Text>
         </View>
 
-        {/* Carousel, Services and Top Categories - unchanged */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Home Services at Your Doorsteps</Text>
           <TouchableOpacity onPress={() => navigation.navigate('AllCategories')}>
@@ -189,7 +149,6 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // same as your current styles, unchanged
   container: { flex: 1, backgroundColor: '#fff' },
   header: { padding: 20, backgroundColor: '#f5f5f5' },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
@@ -197,7 +156,6 @@ const styles = StyleSheet.create({
   appName: { fontSize: 24, fontWeight: 'bold', flex: 1, marginLeft: 10 },
   iconButton: { marginHorizontal: 5 },
   icon: { fontSize: 22 },
-  address: { marginTop: 10, fontSize: 14, color: '#666' },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,21 +215,26 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 14,
-    color: '#333',
   },
   bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    backgroundColor: '#eee',
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
   },
-  navItem: { alignItems: 'center' },
-  navIcon: { fontSize: 24 },
-  navLabel: { fontSize: 12 },
+  navItem: {
+    alignItems: 'center',
+  },
+  navIcon: {
+    fontSize: 24,
+  },
+  navLabel: {
+    fontSize: 12,
+  },
 });
